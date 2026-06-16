@@ -1,0 +1,2464 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head> 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=VT323&display=swap" rel="stylesheet">
+<link href=href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<title>Marine Archive</title>
+
+<style>
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+
+  overflow:hidden;
+
+  font-family:'',sans-serif;
+
+  cursor:auto;
+
+ background:
+radial-gradient(
+circle,
+#20143a 0%,
+#0c1028 60%,
+#040814 100%
+);
+}
+body::before{
+
+content:"";
+
+position:fixed;
+
+inset:0;
+
+background-image:
+
+linear-gradient(
+rgba(255,122,200,0.025) 1px,
+transparent 1px
+),
+
+linear-gradient(
+90deg,
+rgba(255,122,200,0.025) 1px,
+transparent 1px
+);
+
+
+background-size:
+30px 30px;
+
+pointer-events:none;
+
+z-index:-1;
+
+}
+canvas{
+  display:block;
+}
+.data-stream{
+
+position:absolute;
+
+color:#ff7ac8;
+
+font-family:'VT323', monospace;
+
+font-size:12px;
+
+opacity:0.08;
+
+pointer-events:none;
+
+animation:
+floatData 12s linear infinite;
+
+text-shadow:
+0 0 10px #ff7ac8;
+
+}
+@keyframes floatData{
+
+0%{
+
+transform:
+translateY(40px);
+
+opacity:0;
+
+}
+
+20%{
+
+opacity:0.08;
+
+}
+
+80%{
+
+opacity:0.08;
+
+}
+
+100%{
+
+transform:
+translateY(-40px);
+
+opacity:0;
+
+}
+
+}
+/* ===============================
+   배경 빛
+=============================== */
+
+.glow{
+
+  position:absolute;
+
+  border-radius:50%;
+
+  filter:blur(140px);
+
+  pointer-events:none;
+}
+
+.glow.one{
+
+  width:420px;
+  height:420px;
+
+  background:
+    rgba(120,220,255,0.1);
+
+  top:-120px;
+  left:-100px;
+}
+
+.glow.two{
+
+  width:380px;
+  height:380px;
+
+  background:
+    rgba(70,170,255,0.08);
+
+  bottom:-100px;
+  right:-80px;
+}
+
+
+/* ===============================
+   타이틀
+=============================== */
+
+.title{
+
+margin:0 0 24px 0;
+
+white-space:nowrap;
+
+font-family:'VT323', monospace;
+font-size:3rem;
+
+letter-spacing:1px;
+
+background:linear-gradient(
+to bottom,
+#ffffff 10%,
+#ffe8ff 20%,
+#ff9ee8 45%,
+#ff5fd6 75%,
+#d93fb0 100%
+);
+
+background-clip:text;
+-webkit-background-clip:text;
+
+color:transparent;
+-webkit-text-fill-color:transparent;
+
+
+text-shadow:
+
+0 2px 0 #ff8ae0,
+
+0 4px 0 #e94dc2,
+
+0 6px 0 #b82d90,
+
+0 0 10px rgba(255,122,200,.5);
+
+}
+
+.title-ui{
+
+position:absolute;
+
+top:80px;
+left:80px;
+
+z-index:10;
+
+display:flex;
+flex-direction:column;
+align-items:flex-start;
+
+}
+
+
+
+
+.title-runes{
+
+margin-top:18px;
+margin-bottom:30px;
+
+color:#ff7ac8;
+
+font-size:20px;
+
+letter-spacing:16px;
+
+text-shadow:
+0 0 10px #ff7ac8,
+0 0 20px #ff7ac8;
+
+opacity:.85;
+
+}
+
+
+.terminal-title{
+  font-family:share-tech-mono-regular, "Share Tech Mono", monospace;
+  font-size:3rem;
+
+letter-spacing:2px;
+
+color:#ff7ac8;
+
+}
+
+/* ===============================
+   검색창
+=============================== */
+
+.search-ui{
+
+  position:absolute;
+
+  top:120px;
+  right:60px;
+
+  display:flex;
+
+  gap:12px;
+
+  z-index:20;
+}
+
+.search-ui input{
+box-shadow:
+0 0 20px rgba(255,122,200,.15);
+  width:260px;
+
+  padding:15px;
+
+  border:none;
+
+  border-radius:22px;
+
+  background:
+    rgba(255,255,255,0.08);
+
+  backdrop-filter:blur(18px);
+
+  color:white;
+
+  outline:none;
+
+  border:
+1px solid rgba(255,122,200,.18);
+}
+
+.search-ui input::placeholder{
+font-family:share-tech-mono-regular, "Share Tech Mono", monospace;
+  color:
+    rgba(255,255,255,0.5);
+}
+
+.search-ui button{
+
+  padding:15px 22px;
+
+  border:none;
+
+  border-radius:22px;
+
+  cursor:pointer;
+
+  color:white;
+
+  background:
+  linear-gradient(
+  135deg,
+  #ff7ac8,
+  #d28cff);
+
+  box-shadow:
+  0 0 25px rgba(255,122,200,.35);
+
+}
+
+/* ===============================
+   팝업
+=============================== */
+.scan-container{
+
+  position:relative;
+  overflow:hidden;
+
+  border-radius:24px;
+
+  box-shadow:
+  inset 0 0 60px rgba(255,255,255,0.08),
+  inset 0 0 120px rgba(255,120,210,0.12);
+
+}
+
+/* 스캔 라인 */
+
+
+.scan-data{
+
+  position:absolute;
+
+  top:12px;
+  left:12px;
+
+  color:#ff7ac8;
+
+  font-size:10px;
+
+  line-height:1.8;
+
+  letter-spacing:2px;
+
+  text-shadow:
+  0 0 8px #ff7ac8;
+
+  z-index:20;
+
+}
+.popup{
+
+   opacity:0;
+  transform:scale(0.92);
+
+  transition:
+  opacity 1.5s ease,
+  transform 1.5s ease;
+
+ 
+background:
+rgba(15,20,35,0.75);
+
+backdrop-filter:
+blur(20px);
+
+border:
+1px solid rgba(255,122,200,0.2);
+}
+.popup.active{
+
+  opacity:1;
+  transform:scale(1);
+
+}
+.archive-info{
+
+  margin-top:18px;
+  margin-bottom:18px;
+
+}
+
+.info-row{
+
+  display:flex;
+
+  justify-content:space-between;
+
+  align-items:center;
+
+  padding:6px 0;
+
+  border-bottom:
+  1px solid rgba(255,122,200,.12);
+
+}
+
+.info-row span:first-child{
+
+  color:#ff7ac8;
+
+  letter-spacing:2px;
+
+  font-size:0.8rem;
+
+}
+
+.info-row span:last-child{
+
+  color:white;
+
+}
+.archive-title{
+
+color:white;
+margin-top:20px;
+letter-spacing:4px;
+font-size:1.2rem;
+text-shadow:
+0 0 4px #ff7ac8,
+0 0 9px #ff7ac8;
+
+}
+
+
+
+.species-name{
+
+color:#ff9adf;
+
+letter-spacing:3px;
+
+font-size:1.0rem;
+
+}
+
+.data-line{
+
+color:#ff7ac8;
+
+letter-spacing:2px;
+
+}
+
+.description{
+
+color:#d7c8ff;
+max-width:90%;
+line-height:1.8;
+
+}
+
+.memory-tag{
+
+color:#ff7ac8;
+
+letter-spacing:3px;
+
+font-size:0.85rem;
+
+text-align:center;
+
+margin-top:20px;
+
+text-shadow:
+0 0 8px #ff7ac8,
+0 0 16px #ff7ac8;
+
+animation:
+memoryBlink 1.8s infinite;
+
+}
+@keyframes memoryBlink{
+
+0%{
+opacity:1;
+}
+
+50%{
+opacity:0.35;
+}
+
+100%{
+opacity:1;
+}
+
+}
+
+
+#loadingScreen{
+overflow:hidden;
+
+position:fixed;
+
+top:0;
+left:0;
+
+width:100%;
+height:100%;
+
+display:none;
+
+justify-content:center;
+align-items:center;
+
+background:
+transparent;
+
+backdrop-filter:
+blur(3px);
+
+z-index:999;
+
+}
+
+.loading-box{
+
+text-align:center;
+
+font-family:
+'Silkscreen',
+sans-serif;
+
+}
+
+.loading-title{
+
+color:#ff7ac8;
+font-size:20px;
+letter-spacing:4px;
+margin-bottom:20px;
+
+letter-spacing:4px;
+
+text-shadow:
+0 0 10px #ff7ac8;
+
+}
+
+.loading-bar{
+
+width:280px;
+
+height:16px;
+
+border:
+2px solid #ff7ac8;
+
+padding:3px;
+
+}
+
+#loadingFill{
+
+width:0%;
+
+height:100%;
+
+background:#ff7ac8;
+
+box-shadow:
+0 0 12px #ff7ac8;
+
+transition:0.1s;
+
+}
+
+#loadingPercent{
+
+margin-top:12px;
+
+color:white;
+
+}
+
+#loadingStatus{
+  color:white !important;
+}
+
+.info-popup{
+
+  position:absolute;
+
+  top:50%;
+  left:50%;
+
+  transform:
+    translate(-50%,-50%)
+    scale(0.85);
+
+  width:470px;
+
+  padding:34px;
+
+  border-radius:55px;
+
+
+  background:
+
+    rgba(5,10,20,.9);
+
+  backdrop-filter:blur(24px);
+
+  border:
+    1px solid #ff7ac8;
+      font-family:'Silkscreen',sans-serif;
+
+box-shadow:
+    0 0 20px rgba(120,220,255,0.25);
+  color:white;
+background-image:
+repeating-linear-gradient(
+to bottom,
+transparent 0px,
+transparent 2px,
+rgba(255,255,255,.03) 3px
+);
+  opacity:0;
+
+  pointer-events:none;
+
+  transition:0.45s;
+
+  z-index:50;
+}
+
+.info-popup.active{
+
+  opacity:1;
+
+  pointer-events:auto;
+
+  transform:
+    translate(-50%,-50%)
+    scale(1);
+}
+.popup-image{
+
+  width:60%;
+  display:block;
+  margin:0 auto;
+
+
+  transform:
+  perspective(800px)
+  rotateX(3deg);
+
+  filter:
+  drop-shadow(0 0 8px #ff7ac8)
+  drop-shadow(0 0 16px #ff7ac8);
+
+  transition:
+  clip-path 1.2s ease;
+
+  animation:
+  imagePulse 2s ease-in-out infinite;
+
+}
+
+.popup-image.loaded{
+  clip-path:
+  inset(0% 0% 0% 0%);
+}
+
+@keyframes imagePulse{
+
+  0%{
+    transform:
+    perspective(800px)
+    rotateX(3deg)
+    scale(1);
+  }
+
+  50%{
+    transform:
+    perspective(800px)
+    rotateX(3deg)
+    scale(1.03);
+  }
+
+  100%{
+    transform:
+    perspective(800px)
+    rotateX(3deg)
+    scale(1);
+  }
+
+}
+
+.close-btn{
+
+  margin-top:28px;
+
+  padding:12px 18px;
+
+  border:none;
+
+  border-radius:18px;
+
+  cursor:pointer;
+
+  background:
+    rgba(255,255,255,0.1);
+
+  color:white;
+}
+
+/* ===============================
+   시스템 UI
+=============================== */
+.system-status{
+font-family:share-tech-mono-regular, "Share Tech Mono", monospace;
+font-size:11px;
+
+letter-spacing:3px;
+
+color:#ff7ac8;
+
+opacity: 1;
+
+}
+
+.system-ui{
+font-family:'Share Tech Mono', monospace;
+  position:absolute;
+
+  bottom:35px;
+  left:80px;
+
+    color:#8fe9ff;
+
+
+  line-height:1.8;
+
+  z-index:10;
+
+  font-size:0.8rem;
+}
+.access-ui{
+font-family:'Share Tech Mono', monospace;
+  position:absolute;
+
+  top:80px;
+  right:80px;
+
+  z-index:20;
+}
+.search-hints{
+
+margin-top:18px;
+
+display:flex;
+
+flex-wrap:wrap;
+
+gap:8px;
+
+opacity:.65;
+
+}
+
+.search-hints span{
+
+padding:4px 10px;
+
+border:1px solid rgba(139,225,255,.25);
+
+border-radius:20px;
+
+font-family:'Share Tech Mono', monospace;
+
+font-size:10px;
+
+letter-spacing:2px;
+
+color:#8be1ff;
+
+cursor:pointer;
+
+transition:.2s;
+
+}
+
+
+.suggestions{
+
+display:none;
+
+margin-top:16px;
+
+border:1px solid
+rgba(139,225,255,.2);
+
+border-radius:12px;
+
+background:
+rgba(5,10,20,.85);
+
+overflow:hidden;
+
+}
+
+.suggestions div{
+
+padding:10px 14px;
+
+font-size:11px;
+
+letter-spacing:2px;
+
+color:#ff9adf;
+
+cursor:pointer;
+
+transition:.2s;
+
+}
+
+.suggestions div:hover{
+
+background:
+rgba(139,225,255,.08);
+
+}
+#accessBtn{
+font-family:'Share Tech Mono', monospace;
+  padding:16px 28px;
+
+  border:none;
+
+  border-radius:30px;
+
+  background:
+  rgba(255,255,255,0.08);
+
+  cursor:pointer;
+
+  font-size:1rem;
+
+  backdrop-filter:blur(20px);
+
+ color:#ff9adf;
+
+  box-shadow:
+  0 0 12px rgba(255,122,200,.35);
+
+  border:
+  0.5px solid rgba(255,122,200,.25);
+}
+
+.terminal-ui{
+
+  position:absolute;
+
+  top:120px;
+  right:50px;
+
+  width:320px;
+
+  padding:20px;
+
+  border-radius:20px;
+
+  background:
+  rgba(0,0,0,0.25);
+
+  backdrop-filter:blur(20px);
+
+  border:
+  1px solid rgba(120,220,255,0.15);
+
+  opacity:0;
+
+  pointer-events:none;
+
+  transform:translateY(-10px);
+
+  transition:0.35s;
+
+  z-index:20;
+}
+
+.terminal-ui.active{
+
+  opacity:1;
+
+  pointer-events:auto;
+
+  transform:translateY(0);
+}
+
+.terminal-title{
+
+  color:#8fe9ff;
+
+  margin-bottom:12px;
+
+  font-size:0.8rem;
+
+  letter-spacing:2px;
+}
+
+.terminal-status{
+
+  margin-top:8px;
+
+  font-size:0.65rem;
+
+  letter-spacing:3px;
+
+  text-transform:uppercase;
+
+  color:rgba(139,225,255,0.45);
+
+}
+
+.terminal-ui input{
+
+  width:100%;
+
+  padding:14px;
+
+  background:transparent;
+
+  border:none;
+
+  outline:none;
+
+  color:white;
+}
+</style>
+</head>
+
+<body>
+<div id="loadingScreen">
+  <div class="loading-box">
+
+    <div class="loading-title">
+      SIGNAL DETECTED
+    </div>
+    <div id="loadingStatus">
+RECOVERING MEMORY
+</div>
+
+    <div class="loading-bar">
+
+      <div id="loadingFill"></div>
+
+    </div>
+
+    
+
+  </div>
+
+</div>
+<div class="glow one"></div>
+<div class="glow two"></div>
+
+<div class="cursor-wave" id="cursorWave"></div>
+
+<div class="title-ui">
+
+<h1 class="title">
+OCEAN MEMORY ARCHIVE
+</h1>
+
+<div class="title-runes">
+✦ ◈ ✦
+</div>
+
+<div class="system-status">
+● SIGNAL LOCKED
+</div>
+
+<p class="terminal-title">
+ARCHIVE TERMINAL v2.4
+<br>
+Recovering Lost Marine Memories...
+</p>
+
+</div>
+
+
+</div>
+<div class="access-ui">
+
+  <button id="accessBtn">
+    ACCESS MEMORY
+  </button>
+
+</div>
+
+<div class="terminal-ui" id="terminal">
+
+  <div class="terminal-title">
+    MEMORY ACCESS TERMINAL<br>
+    <p class="terminal-status">
+  ● Archive status : ONLINE
+</p>
+    
+  </div>
+
+  <input
+    type="text"
+    id="searchInput"
+    placeholder="ENTER MEMORY ID..."
+  >
+ <div id="suggestions" class="suggestions">
+
+<div onclick="fillSearch('JELLYFISH')">
+JELLYFISH
+</div>
+
+<div onclick="fillSearch('mantaray')">
+MANTARAY
+</div>
+
+<div onclick="fillSearch('WHALE')">
+WHALE
+</div>
+
+<div onclick="fillSearch('MANTA')">
+MANTA
+</div>
+
+<div onclick="fillSearch('SQUID')">
+SQUID
+</div>
+
+<div onclick="fillSearch('OCTOPUS')">
+OCTOPUS
+</div>
+
+<div onclick="fillSearch('DOLPHIN')">
+DOLPHIN
+</div>
+
+<div onclick="fillSearch('ANGLERFISH')">
+ANGLERFISH
+</div>
+
+<div onclick="fillSearch('vampiresquid')">
+VAMPIRE SQUID
+</div>
+
+</div>
+
+</datalist>
+
+</div>
+
+</div>
+
+<div class="info-popup" id="popup">
+
+  <div id="popupContent"></div>
+
+  <button class="close-btn" id="closeBtn">
+    CLOSE
+  </button>
+
+</div>
+
+<div class="system-ui">
+
+  SYSTEM STATUS : CONNECTED<br>
+  OCEAN DEPTH : 2140m<br>
+  MEMORY STREAM : ACTIVE
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+
+<script>
+
+/* ===============================
+   Three.js 기본 설정
+=============================== */
+
+const scene = new THREE.Scene();
+
+scene.fog =
+  new THREE.Fog(
+    0x01060f,
+    8,
+    26
+  );
+
+const camera =
+  new THREE.PerspectiveCamera(
+    60,
+    window.innerWidth / window.innerHeight,
+    0.1,
+    1000
+  );
+
+camera.position.z = 8;
+
+let targetCameraZ = 8;
+window.addEventListener(
+  "wheel",
+  (e)=>{
+
+    targetCameraZ += e.deltaY * 0.005;
+
+    if(targetCameraZ < 2.5)
+      targetCameraZ = 4;
+
+    if(targetCameraZ > 15)
+      targetCameraZ = 15;
+
+  }
+);
+const renderer =
+  new THREE.WebGLRenderer({
+    antialias:true,
+    alpha:true
+  });
+
+renderer.setSize(
+  window.innerWidth,
+  window.innerHeight
+);
+
+document.body.appendChild(
+  renderer.domElement
+);
+
+/* ===============================
+   중앙 코어
+=============================== */
+
+const geometry =
+  new THREE.IcosahedronGeometry(
+    1.5,
+    25
+  );
+
+const material =
+  new THREE.MeshPhysicalMaterial({
+
+    color:0xd6f7ff,
+
+    wireframe: true,
+blending:THREE.AdditiveBlending,
+
+   emissive:0xff7ac8,
+emissiveIntensity:4,
+
+    transparent:true,
+
+    opacity:0.12
+  });
+
+const sphere =
+
+  new THREE.Mesh(
+    geometry,
+    material
+  );
+
+scene.add(sphere);
+
+const glowLight =
+new THREE.PointLight(
+  0xff7be5,
+  8,
+  20
+);
+
+scene.add(glowLight);
+
+const runeGroup =
+new THREE.Group();
+
+scene.add(runeGroup); 
+
+const memoryNodes = [];
+
+for(let i=0;i<24;i++){
+
+  const nodeCanvas =
+document.createElement("canvas");
+
+nodeCanvas.width = 128;
+nodeCanvas.height = 128;
+
+const ctx =
+nodeCanvas.getContext("2d");
+
+const colors = [
+
+"#ff7ac8",
+
+"#d28cff",
+
+"#8be1ff"
+
+];
+
+ctx.fillStyle =
+
+colors[
+Math.floor(
+Math.random() *
+colors.length
+)
+];
+ctx.font = "90px Arial";
+
+ctx.textAlign = "center";
+ctx.textBaseline = "middle";
+
+const symbols = [
+"+",
+"✦",
+"◈",
+"✧"
+];
+
+ctx.fillText(
+symbols[
+Math.floor(
+Math.random() *
+symbols.length
+)
+],
+64,
+64
+);
+
+const nodeTexture =
+new THREE.CanvasTexture(
+  nodeCanvas
+);
+
+const randomColor =
+
+colors[
+Math.floor(
+Math.random() *
+colors.length
+)
+];
+
+const nodeMaterial =
+new THREE.SpriteMaterial({
+
+  map:nodeTexture,
+
+  transparent:true
+
+});
+
+const node =
+new THREE.Sprite(
+  nodeMaterial
+);
+
+node.scale.set(
+  0.2,
+  0.2,
+  0.2
+);
+  
+  runeGroup.add(node);
+const angle =
+(i / 12) * Math.PI * 2;
+
+node.position.set(
+  Math.cos(angle) * 1.8,
+  Math.sin(angle) * 1.8,
+  0
+);
+  memoryNodes.push(node);
+
+}
+const originalPositions =
+  geometry.attributes.position.array.slice();
+
+  /* const ringPoints = [];
+
+for(let i=0;i<memoryNodes.length;i++){
+
+  ringPoints.push(
+    memoryNodes[i].position
+  );
+
+}
+
+ringPoints.push(
+  memoryNodes[0].position
+);
+
+
+const ringGeometry =
+new THREE.BufferGeometry()
+.setFromPoints(ringPoints);
+
+const ringMaterial =
+new THREE.LineBasicMaterial({
+
+  color:0x8be1ff,
+
+  transparent:true,
+
+  opacity:0.3
+
+});
+
+const ring =
+new THREE.Line(
+  ringGeometry,
+  ringMaterial
+);
+
+runeGroup.add(ring);
+*/
+
+/* ===============================
+   기본 파티클
+=============================== */
+
+const particleGeometry =
+  new THREE.BufferGeometry();
+
+const particleCount = 1500;
+
+const positions =
+  new Float32Array(
+    particleCount * 3
+  );
+
+for(let i=0;i<particleCount*3;i++){
+
+  positions[i] =
+    (Math.random()-0.5) * 70;
+}
+
+particleGeometry.setAttribute(
+  "position",
+  new THREE.BufferAttribute(
+    positions,
+    3
+  )
+);
+
+const particleMaterial =
+  new THREE.PointsMaterial({
+
+    color:0xffffff,
+
+    size:0.03,
+
+    transparent:true,
+
+    opacity:0.7
+  });
+
+const particles =
+  new THREE.Points(
+    particleGeometry,
+    particleMaterial
+  );
+
+scene.add(particles);
+
+/* ===============================
+   물방울 파티클
+=============================== */
+
+const bubbleTexture =
+  new THREE.TextureLoader().load(
+    "https://threejs.org/examples/textures/sprites/circle.png"
+  );
+
+const bubbleGeometry =
+  new THREE.BufferGeometry();
+
+const bubbleCount = 250;
+
+const bubblePositions =
+  new Float32Array(
+    bubbleCount * 3
+  );
+
+for(let i=0;i<bubbleCount*3;i++){
+
+  bubblePositions[i] =
+    (Math.random()-0.5) * 30;
+}
+
+bubbleGeometry.setAttribute(
+  "position",
+  new THREE.BufferAttribute(
+    bubblePositions,
+    3
+  )
+);
+
+const bubbleMaterial =
+  new THREE.PointsMaterial({
+
+    map:bubbleTexture,
+
+    color:0xdff8ff,
+
+    size:0.18,
+
+    transparent:true,
+
+    opacity:0.35,
+
+    depthWrite:false
+  });
+
+const bubbles =
+  new THREE.Points(
+    bubbleGeometry,
+    bubbleMaterial
+  );
+
+scene.add(bubbles);
+
+/* ===============================
+   글리터 파티클
+=============================== */
+
+const glitterTexture =
+  new THREE.TextureLoader().load(
+    "https://threejs.org/examples/textures/sprites/spark1.png"
+  );
+
+const glitterGeometry =
+  new THREE.BufferGeometry();
+
+const glitterCount = 800;
+
+const glitterPositions =
+  new Float32Array(
+    glitterCount * 3
+  );
+
+for(let i=0;i<glitterCount*3;i++){
+
+  glitterPositions[i] =
+    (Math.random()-0.5) * 50;
+}
+
+glitterGeometry.setAttribute(
+  "position",
+  new THREE.BufferAttribute(
+    glitterPositions,
+    3
+  )
+);
+
+const glitterMaterial =
+  new THREE.PointsMaterial({
+
+    map:glitterTexture,
+
+    color:0xffffff,
+
+    size:0.08,
+
+    transparent:true,
+
+    opacity:0.8,
+
+    depthWrite:false
+  });
+
+const glitter =
+  new THREE.Points(
+    glitterGeometry,
+    glitterMaterial
+  );
+
+scene.add(glitter);
+
+/* ===============================
+   조명
+=============================== */
+
+const ambientLight =
+  new THREE.AmbientLight(
+    0xffffff,
+    0.3
+  );
+
+scene.add(ambientLight);
+
+const pointLight =
+  new THREE.PointLight(
+    0xff7be5,
+    8
+  );
+
+pointLight.position.set(
+  0,
+  0,
+  3
+);
+
+scene.add(pointLight);
+
+/* ===============================
+   마우스
+=============================== */
+
+const mouse = {
+  x:0,
+  y:0
+  
+};
+
+let isDragging = false;
+
+let previousMouseX = 0;
+
+let rotationTarget = 0;
+
+window.addEventListener(
+  "mousedown",
+  (e)=>{
+
+    isDragging = true;
+
+    previousMouseX = e.clientX;
+
+  }
+);
+
+window.addEventListener(
+  "mouseup",
+  ()=>{
+
+    isDragging = false;
+
+  }
+);
+
+window.addEventListener(
+  "mousemove",
+  (e)=>{
+
+    if(isDragging){
+
+      const delta =
+        e.clientX
+        - previousMouseX;
+
+      rotationTarget +=
+        delta * 0.025;
+
+      previousMouseX =
+        e.clientX;
+    }
+
+  }
+);
+
+const cursorWave =
+  document.getElementById(
+    "cursorWave"
+  );
+
+window.addEventListener(
+  "mousemove",
+  (e)=>{
+
+    mouse.x =
+      (e.clientX / window.innerWidth)
+      * 2 - 1;
+
+    mouse.y =
+      -(e.clientY / window.innerHeight)
+      * 2 + 1;
+
+    cursorWave.style.left =
+      e.clientX + "px";
+
+    cursorWave.style.top =
+      e.clientY + "px";
+  }
+);
+
+/* ===============================
+   구체 변형
+=============================== */
+
+function distortSphere(time){
+  sphere.scale.x +=
+(
+  1 + (8 - camera.position.z) * 0.05
+  - sphere.scale.x
+) * 0.03;
+
+sphere.scale.y =
+sphere.scale.x ;
+sphere.scale.z =
+sphere.scale.x;
+
+  const positions =
+    geometry.attributes.position.array;
+
+  for(let i=0;i<positions.length;i+=3){
+
+    const ox =
+      originalPositions[i];
+
+    const oy =
+      originalPositions[i+1];
+
+    const oz =
+      originalPositions[i+2];
+
+    const wave =
+      Math.sin(
+        time * 2 +
+        ox * 2 +
+        oy * 2
+      ) * 0.035;
+
+   positions[i] =
+ox +
+ox * wave +
+Math.sin(time + oy * 3) * 0.12;
+
+positions[i+1] =
+oy +
+oy * wave +
+Math.cos(time * 0.8 + ox * 2) * 0.18;
+
+positions[i+2] =
+oz +
+oz * wave +
+Math.sin(time * 1.2 + oz * 2) * 0.12;
+  }
+
+  geometry.attributes.position.needsUpdate = true;
+}
+
+/* ===============================
+   데이터
+=============================== */
+
+const marineData = {
+
+jellyfish:{
+  title:"ARCHIVE RECORD #001",
+
+  species:"JELLYFISH",
+
+  class:"SCYPHOZOA",
+
+  rarity:"COMMON",
+
+  depth:"200m",
+
+  signal:"88%",
+
+  description:
+  "A translucent organism capable of preserving marine memories.",
+
+  color:0xff7ac8,
+
+  image:"jellyfish.png"
+},
+
+ dolphin:{
+  title:"ARCHIVE RECORD #082",
+
+  species:"DOLPHIN",
+
+  class:"MAMMALIA",
+
+  rarity:"UNCOMMON",
+
+  depth:"150m",
+
+  signal:"94%",
+
+  description:
+  "An intelligent marine species capable of long-range memory transmission.",
+
+  color:0xd19cff,
+
+  image:"dolphin.png"
+},
+
+  octopus:{
+    title:"ARCHIVE RECORD #033",
+  
+    species:"OCTOPUS",
+
+    class:"CEPHALOPODA",
+
+    rarity:"UNCOMMON",
+  
+    depth:"300m",
+  
+    signal:"76%",
+  
+    description:
+    "A highly adaptable creature with a unique memory encoding system.",
+  
+    color:0x8ad1ff,
+  
+    image:"octopus.png"
+  },
+  
+  seahorse:{
+    title:"ARCHIVE RECORD #004",
+  
+    species:"SEAHORSE",
+
+    class:"ACTINOPTERYGII",
+    
+    rarity:"COMMON",
+  
+    depth:"50m",
+  
+    signal:"82%",
+  
+    description:
+    "A small marine animal that stores memories in its tail.",
+  
+    color:0x8affd6,
+  
+    image:"seahorse.png"
+  },
+
+  mantaray:{
+  title:"ARCHIVE RECORD #067",
+
+  species:"MANTA RAY",
+
+  class:"ELASMOBRANCHII",
+
+  rarity:"RARE",
+
+  depth:"1000m",
+
+  signal:"87%",
+
+  description:
+  "A graceful ocean drifter capable of navigating vast distances through subtle electromagnetic signals.",
+
+  color:0x8be1ff,
+
+  image:"mantaray.png"
+},
+
+  vampiresquid:{
+  title:"ARCHIVE RECORD #420",
+
+  species:"VAMPIRE SQUID",
+
+  class:"CEPHALOPODA",
+
+  rarity:"RARE",
+
+  depth:"900m",
+
+  signal:"91%",
+
+  description:
+  "Despite its name, this deep-sea cephalopod does not consume blood. It survives in oxygen-poor waters where few creatures can endure.",
+
+  color:0xd28cff,
+
+  image:"vampire squid.png"
+},
+
+barreleye:{
+  title:"ARCHIVE RECORD #209",
+
+  species:"BARRELEYE FISH",
+
+  class:"ACTINOPTERYGII",
+
+  rarity:"RARE",
+
+  depth:"800m",
+
+  signal:"84%",
+
+  description:
+  "A mysterious fish with a transparent head. Its tubular eyes rotate upward to detect faint silhouettes in the darkness.",
+
+  color:0x8be1ff,
+
+  image:"barreleye.png"
+},
+
+dumbooctopus:{
+  title:"ARCHIVE RECORD #048",
+
+  species:"DUMBO OCTOPUS",
+
+  class:"CEPHALOPODA",
+
+  rarity:"EPIC",
+
+  depth:"4000m",
+
+  signal:"95%",
+
+  description:
+  "Named after its ear-like fins, this rare octopus drifts silently through the deepest regions of the ocean.",
+
+  color:0xff7ac8,
+
+  image:"dumbo_octopus.png"
+},
+
+giantisopod:{
+  title:"ARCHIVE RECORD #109",
+
+  species:"GIANT ISOPOD",
+  class:"MALACOSTRACA",
+  rarity:"RARE",
+  depth:"2140m",
+
+  signal:"77%",
+
+  description:
+  "An ancient scavenger adapted to extreme pressure. It can survive for years without feeding.",
+
+  color:0x8be1ff,
+
+  image:"giant_isopod.png"
+},
+combjelly:{
+  title:"ARCHIVE RECORD #929",
+
+  species:"COMB JELLY",
+
+  class:"CTENOPHORA",
+
+  rarity:"UNCOMMON",
+
+  depth:"Variable",
+
+  signal:"89%",
+
+  description:
+  "Rows of tiny cilia refract light into shifting rainbow patterns, creating a living spectrum beneath the sea.",
+
+  color:0xd28cff,
+
+  image:"comb_jelly.png"
+},
+  };
+/* ===============================
+   검색 기능
+=============================== */
+
+const searchBtn =
+  document.getElementById(
+    "searchBtn"
+  );
+
+const searchInput =
+  document.getElementById(
+    "searchInput"
+  );
+
+const popup =
+  document.getElementById(
+    "popup"
+  );
+
+const popupContent =
+  document.getElementById(
+    "popupContent"
+  );
+
+const closeBtn =
+  document.getElementById(
+    "closeBtn"
+  );
+
+  const accessBtn =
+document.getElementById(
+"accessBtn"
+);
+
+const terminal =
+document.getElementById(
+"terminal"
+);
+
+accessBtn.addEventListener(
+"click",
+()=>{
+
+ terminal.classList.toggle(
+ "active"
+ );
+
+}
+
+);
+
+function searchData(){
+
+  const query =
+    searchInput.value.toLowerCase();
+
+  const result =
+    marineData[query];
+
+  if(result){
+
+    targetCameraZ = 0.3;
+
+    sphere.scale.set(
+      1.8,
+      2.0,
+      1.8
+    );
+
+    sphere.material.color.set(
+      result.color
+    );
+
+    sphere.material.emissive.set(
+      result.color
+    );
+
+    particles.material.color.set(
+      result.color
+    );
+
+    popupContent.innerHTML = `
+
+    
+<div class="scan-container">
+<div class="target-circle"></div>
+  <img src="${result.image}"
+  class="popup-image"
+  >
+
+  <div class="scan-data">
+
+    SIGNAL 88%
+    <br>
+    DEPTH 200m
+    <br>
+    STATUS ACTIVE
+
+  </div>
+
+</div>
+
+<h2 class="archive-title">
+${result.title}
+</h2>
+
+<p class="species-name">
+${result.species}
+</p>
+
+<div class="archive-info">
+<div class="archive-info">
+
+  <div class="info-row">
+    <span>SPECIES</span>
+    <span>${result.species}</span>
+  </div>
+
+  <div class="info-row">
+    <span>CLASS</span>
+    <span>${result.class}</span>
+  </div>
+
+  <div class="info-row">
+    <span>RARITY</span>
+    <span>${result.rarity}</span>
+  </div>
+
+</div>
+
+</div>
+
+<br>
+
+<p class="description" id="typingDescription">
+</p>
+
+<br>
+
+<p class="memory-tag">
+
+[ MEMORY RECOVERED ]
+
+</p>
+
+`;
+sphere.material.emissiveIntensity =
+8;
+
+startLoading(()=>{
+
+popup.classList.add(
+"active"
+);
+
+typeText(
+result.description
+);
+
+});
+function startLoading(callback){
+
+const loadingScreen =
+document.getElementById(
+"loadingScreen"
+);
+
+const loadingFill =
+document.getElementById(
+"loadingFill"
+);
+
+const loadingStatus =
+document.getElementById(
+"loadingStatus"
+);
+
+
+loadingScreen.style.display =
+"flex";
+
+let progress = 0;
+
+const loading =
+setInterval(()=>{
+
+progress +=
+Math.floor(
+Math.random()*15
+)+5;
+
+if(progress > 100){
+progress = 100;
+}
+
+loadingFill.style.width =
+progress + "%";
+
+const dots =
+".".repeat(
+Math.floor(progress / 20)
+);
+
+loadingStatus.textContent =
+"RECOVERING MEMORY" + dots;
+
+
+if(progress >= 100){
+
+clearInterval(
+loading
+);
+
+setTimeout(()=>{
+
+loadingScreen.style.display =
+"none";
+
+sphere.material.emissiveIntensity =
+4;
+
+callback();
+
+},1800);
+
+}
+
+},120);
+
+}
+
+function typeText(text){
+
+const target =
+document.getElementById(
+"typingDescription"
+);
+
+target.textContent = "";
+
+let i = 0;
+
+const typing =
+setInterval(()=>{
+
+target.textContent +=
+text.charAt(i);
+
+i++;
+
+if(i >= text.length){
+
+clearInterval(typing);
+
+}
+
+},30);
+
+}
+  }else{
+
+
+
+  popupContent.innerHTML = `
+
+    <div style="
+      text-align:center;
+      padding:20px;
+    ">
+
+      <h2 style="
+        color:#8be1ff;
+        letter-spacing:3px;
+        margin-bottom:20px;
+      ">
+        404 MEMORY LOST
+      </h2>
+
+      <p style="
+        color:rgba(255,255,255,0.7);
+        line-height:1.8;
+      ">
+        Archive record not found.
+        <br>
+        Data fragment may be corrupted.
+      </p>
+
+      <br>
+
+      <p style="
+        color:rgba(180,230,255,0.5);
+        font-size:0.9rem;
+      ">
+        Available Records:
+        <br>
+        try...
+      </p>
+
+    </div>
+
+  `;
+
+  popup.classList.add(
+    "active"
+  );
+
+}
+}
+searchInput.addEventListener(
+  "keydown",
+  (e)=>{
+
+    if(e.key === "Enter"){
+
+      searchData();
+
+    }
+
+  }
+);
+searchInput.addEventListener(
+"input",
+()=>{
+
+const value =
+searchInput.value
+.toLowerCase();
+
+const items =
+suggestions.querySelectorAll(
+"div"
+);
+
+items.forEach(item=>{
+
+const text =
+item.textContent
+.toLowerCase();
+
+if(
+text.includes(value)
+){
+
+item.style.display =
+"block";
+
+}else{
+
+item.style.display =
+"none";
+
+}
+
+});
+
+suggestions.style.display =
+"block";
+
+if(value===""){
+
+suggestions.style.display =
+"none";
+
+return;
+
+}
+
+}
+);
+
+/* ===============================
+   팝업 닫기
+=============================== */
+
+function closePopup(){
+
+  popup.classList.remove(
+    "active"
+  );
+
+  targetCameraZ = 8;
+
+  sphere.scale.set(
+    1,
+    1,
+    1
+  );
+}
+
+closeBtn.addEventListener(
+  "click",
+  closePopup
+);
+
+window.addEventListener(
+  "keydown",
+  (e)=>{
+
+    if(e.key === "Escape"){
+
+      closePopup();
+
+    }
+
+  }
+);
+
+/* ===============================
+   애니메이션
+=============================== */
+
+glowLight.position.copy(
+  sphere.position
+);
+
+function animate(){
+
+  requestAnimationFrame(
+    animate
+  );
+
+  const time =
+    Date.now() * 0.001;
+
+
+material.emissiveIntensity =
+4 +
+Math.sin(time * 2)
+* 1.2;
+color:0xbff8ff
+
+  sphere.rotation.y +=
+  (
+    rotationTarget
+    - sphere.rotation.y
+  ) * 0.025;
+  sphere.position.y =
+    Math.sin(time * 1.2)
+    * 0.15;
+sphere.scale.x =
+1 + Math.sin(time * 1.5) * 0.015;
+
+sphere.scale.y =
+1 + Math.sin(time * 1.5) * 0.015;
+
+sphere.scale.z =
+1 + Math.sin(time * 1.5) * 0.015;
+  distortSphere(time);
+memoryNodes.forEach(
+(node,index)=>{
+
+  const angle =
+    time * 0.35 +
+    index * (
+      Math.PI * 2 / 5
+    );
+
+  const radius = 2.6;
+
+  node.position.x =
+    Math.cos(angle)
+    * radius;
+
+  node.position.z =
+    Math.sin(angle)
+    * radius;
+
+  node.position.y =
+    Math.sin(
+      time * 1.5 +
+      index
+    ) * 0.4;
+
+});
+  /* 파티클 */
+
+  if(popup.classList.contains("active")){
+
+    particles.rotation.y +=
+      0.004;
+
+  }else{
+
+    particles.rotation.y +=
+      0.0005;
+  }
+
+  /* 물방울 */
+
+  bubbles.position.y +=
+    0.003;
+
+  if(bubbles.position.y > 2){
+
+    bubbles.position.y = -2;
+  }
+
+  /* 글리터 */
+
+  glitterMaterial.opacity =
+  memoryNodes.forEach(
+(node,index)=>{
+
+  const pulse =
+    0.6 +
+    Math.sin(
+      time * 3 +
+      index
+    ) * 0.4;
+
+  node.material.color.setRGB(
+
+    0.55 * pulse,
+
+    0.85 * pulse,
+
+    1 * pulse
+
+  );
+
+});
+    0.5 +
+    Math.sin(time * 3) * 0.3;
+
+  glitter.rotation.y +=
+    0.0008;
+
+  /* 카메라 */
+
+  camera.position.z +=
+    (targetCameraZ
+    - camera.position.z)
+    * 0.03;
+
+  camera.position.x +=
+    (mouse.x * 0.2
+    - camera.position.x)
+    * 0.01;
+
+  camera.position.y +=
+    (mouse.y * 0.12
+    - camera.position.y)
+    * 0.01;
+
+  camera.lookAt(
+    scene.position
+  );
+
+  renderer.render(
+    scene,
+    camera
+  );
+}
+
+animate();
+
+/* ===============================
+   반응형
+=============================== */
+
+
+window.addEventListener(
+  "resize",
+  ()=>{
+
+    camera.aspect =
+      window.innerWidth /
+      window.innerHeight;
+
+    camera.updateProjectionMatrix();
+
+    renderer.setSize(
+      window.innerWidth,
+      window.innerHeight
+    );
+  }
+);
+
+function fillSearch(word){
+
+  searchInput.value = word;
+
+  suggestions.style.display =
+  "none";
+
+  searchData();
+
+}
+</script>
+
+</body>
+</html>
